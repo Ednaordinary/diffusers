@@ -184,10 +184,6 @@ class BitsAndBytesConfig(QuantizationConfigMixin):
             These outliers are often in the interval [-60, -6] or [6, 60]. Int8 quantization works well for values of
             magnitude ~5, but beyond that, there is a significant performance penalty. A good default threshold is 6,
             but a lower threshold might be needed for more unstable models (small models, fine-tuning).
-        llm_int8_skip_modules (`List[str]`, *optional*):
-            An explicit list of the modules that we do not want to convert in 8-bit. This is useful for models such as
-            Jukebox that has several heads in different places and not necessarily at the last position. For example
-            for `CausalLM` models, the last `lm_head` is typically kept in its original `dtype`.
         llm_int8_enable_fp32_cpu_offload (`bool`, *optional*, defaults to `False`):
             This flag is used for advanced use cases and users that are aware of this feature. If you want to split
             your model in different parts and run some parts in int8 on GPU and some parts in fp32 on CPU, you can use
@@ -207,6 +203,10 @@ class BitsAndBytesConfig(QuantizationConfigMixin):
             quantized again.
         bnb_4bit_quant_storage (`torch.dtype` or str, *optional*, defaults to `torch.uint8`):
             This sets the storage type to pack the quanitzed 4-bit prarams.
+        skip_modules (`List[str]`, *optional*):
+            An explicit list of the modules that we do not want to convert. This is useful for models such as
+            SD3 where quantizing `proj_out` can destabilize results. For example for `CausalLM` models, the last
+            `lm_head` is typically kept in its original `dtype`.
         kwargs (`Dict[str, Any]`, *optional*):
             Additional parameters from which to initialize the configuration object.
     """
